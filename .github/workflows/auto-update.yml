@@ -23,16 +23,18 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      # 4️⃣ Verify files (opsional)
-      - name: Verify scripts exist
-        run: ls -l
+      # 4️⃣ Delete existing rule
+      - name: Delete rule (CGPS Filter Lists)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node cf_gateway_rule_delete.js
 
       # 5️⃣ Delete existing Domain List (jangan ada conflict)
       - name: Delete old list
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          LIST_NAME: 'AdGuard_Ads_Block'
         run: node cf_list_delete.js
 
       # 6️⃣ Download and prepare blocklist
@@ -46,7 +48,6 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          LIST_NAME: 'AdGuard_Ads_Block'
         run: node cf_list_create.js
 
       # 8️⃣ Create / update DNS policy
@@ -54,6 +55,4 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          POLICY_NAME: 'Block_AdGuard_Ads_Block'
-          LIST_NAME: 'AdGuard_Ads_Block'
         run: node cf_gateway_rule_create.js
