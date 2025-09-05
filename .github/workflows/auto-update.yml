@@ -26,4 +26,4 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           LIST_NAME: 'AdGuardList'
           BLOCKLIST_URL: 'https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt'
-        run: python update_cf_list.py
+        run: ./python update_cf_list.py
