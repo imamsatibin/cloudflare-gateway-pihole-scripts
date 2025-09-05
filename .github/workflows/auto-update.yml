@@ -3,7 +3,7 @@ name: Update Cloudflare Blocklist
 on:
   schedule:
     - cron: '15 0 * * *'  # tiap hari jam 00:00 UTC
-  workflow_dispatch:      # bisa trigger manual
+  workflow_dispatch:
 
 jobs:
   update-blocklist:
@@ -24,6 +24,6 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          LIST_NAME: 'AdGuardList'
+          LIST_NAME: 'AdGuardDNS'
           BLOCKLIST_URL: 'https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt'
-        run: ./python update_cf_list.py
+        run: python update_cf_list.py
