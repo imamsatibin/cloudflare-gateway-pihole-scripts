@@ -3,24 +3,32 @@ name: Update Cloudflare Blocklist
 on:
   schedule:
     - cron: '15 0 * * *'  # tiap hari jam 00:00 UTC
-  workflow_dispatch:
+  workflow_dispatch:      # bisa trigger manual
 
 jobs:
   update-blocklist:
     runs-on: ubuntu-latest
     steps:
+      # 1️⃣ Checkout repo
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      # 2️⃣ Setup Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
 
+      # 3️⃣ Install requests library
       - name: Install requests
         run: pip install requests
 
-      - name: Run update script
+      # 4️⃣ Verify file location (optional tapi direkomendasikan)
+      - name: Verify file exists
+        run: ls -l
+
+      # 5️⃣ Run update script
+      - name: Run update_cf_list.py
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
