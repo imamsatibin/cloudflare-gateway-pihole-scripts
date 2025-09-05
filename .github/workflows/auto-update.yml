@@ -2,7 +2,7 @@ name: Update Cloudflare Blocklist
 
 on:
   schedule:
-    - cron: '15 0 * * *' # tiap hari jam 00:00 UTC
+    - cron: '0 0 * * *' # tiap hari jam 00:00 UTC
   workflow_dispatch:     # bisa trigger manual
 
 jobs:
@@ -23,25 +23,33 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      # 4️⃣ Verify files (optional)
+      # 4️⃣ Verify files (opsional)
       - name: Verify scripts exist
         run: ls -l
 
-      # 5️⃣ Download and prepare blocklist
+      # 5️⃣ Delete existing Domain List (jangan ada conflict)
+      - name: Delete old list
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          LIST_NAME: 'AdGuard_Ads_Block'
+        run: node cf_list_delete.js
+
+      # 6️⃣ Download and prepare blocklist
       - name: Download AdGuard blocklist
         env:
           BLOCKLIST_URL: 'https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt'
         run: node download_lists.js
 
-      # 6️⃣ Create / update Cloudflare Domain List
-      - name: Update Domain List
+      # 7️⃣ Create / update Cloudflare Domain List
+      - name: Create new Domain List
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           LIST_NAME: 'AdGuard_Ads_Block'
         run: node cf_list_create.js
 
-      # 7️⃣ Create / update DNS policy
+      # 8️⃣ Create / update DNS policy
       - name: Create DNS Policy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
