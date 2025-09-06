@@ -40,7 +40,10 @@ jobs:
       # 6️⃣ Download and prepare blocklist
       - name: Download AdGuard blocklist
         env:
-          BLOCKLIST_URL: 'https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt'
+          BLOCKLIST_URLS: |
+            https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+            https://raw.githubusercontent.com/ABPindo/indonesianadblockrules/master/subscriptions/hosts.txt
+
         run: node download_lists.js
 
       # 7️⃣ Create / update Cloudflare Domain List
